@@ -1,7 +1,4 @@
 const gallery = document.querySelector(".gallery");
-const li = document.createElement("li");
-li.classList.add("gallery-item");
-const a = document.createElement("a");
 
 const images = [
   {
@@ -70,15 +67,34 @@ const images = [
 ];
 
 images.map(({ preview, original, description }) => {
+  const li = document.createElement("li");
+  li.classList.add("gallery-item");
+  const a = document.createElement("a");
+  a.classList.add("gallery-link");
+  a.href = original;
   const image = document.createElement("img");
 
   image.src = preview;
   image.alt = description;
-  image.addEventListener("click", () => {
-    const instance = basicLightbox.create(`<img src=${original} alt=${description} width="1112" height="640">`);
-    document.querySelector("image").onclick = instance.show();
-  });
   a.appendChild(image);
   li.appendChild(a);
   gallery.appendChild(li);
+  gallery.style.display = "grid";
+  gallery.style.gridTemplateColumns = "repeat(3,1fr)";
+  image.style.width = "100%";
+  li.style.listStyle = "none";
+
+  image.addEventListener("click", (event) => {
+    event.preventDefault();
+
+    const instance = basicLightbox.create(
+      `<img src=${original} alt=${description} width="1112" height="640">`
+    );
+    instance.show();
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        instance.close();
+      }
+    });
+  });
 });
